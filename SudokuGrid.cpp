@@ -57,7 +57,7 @@ bool SudokuGrid::Solve()
                         if (grid.Solve())
                         {
                             *this = grid;
-                            break;
+                            return true;
                         }
                         else
                         {

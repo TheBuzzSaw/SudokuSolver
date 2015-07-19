@@ -59,7 +59,11 @@ void SolvePuzzle(const int* puzzle)
 
 int main(int argc, char** argv)
 {
+    cout << "class size: " << sizeof(SudokuGrid) << " bytes\n";
     SolvePuzzle(EasyTestPuzzle);
     SolvePuzzle(EvilTestPuzzle);
+
+    const int EmptyPuzzle[81] = {};
+    SolvePuzzle(EmptyPuzzle);
     return 0;
 }
