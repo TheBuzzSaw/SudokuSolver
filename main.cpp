@@ -45,7 +45,15 @@ void SolvePuzzle(const int* puzzle)
         }
     }
 
+    grid.Solve();
+
     grid.Write(cout);
+
+    if (grid.IsSolved())
+        cout << "SOLVED!\n";
+    else if (!grid.CanBeSolved())
+        cout << "cannot be solved\n";
+
     cout << endl;
 }
 

@@ -4,6 +4,9 @@
 #include <bitset>
 #include <iostream>
 
+const int MultipleValues = -1;
+const int NoValues = -2;
+
 class SudokuGrid
 {
     public:
@@ -14,7 +17,11 @@ class SudokuGrid
         SudokuGrid& operator=(const SudokuGrid&) = default;
 
         bool Set(int row, int column, int value);
+        bool Solve();
 
+        bool IsSolved() const;
+        bool CanBeSolved() const;
+        int Value(int row, int column) const;
         void Write(std::ostream& stream) const;
     protected:
     private:
@@ -22,6 +29,7 @@ class SudokuGrid
 
         void Ban(int row, int column, int value);
         void SpreadBan(int row, int column, int value);
+        int CountLegalValues(int index) const;
 };
 
 #endif

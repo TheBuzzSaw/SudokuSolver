@@ -31,6 +31,88 @@ bool SudokuGrid::Set(int row, int column, int value)
     return true;
 }
 
+bool SudokuGrid::Solve()
+{
+    for (int r = 0; r < 9; ++r)
+    {
+        for (int c = 0; c < 9; ++c)
+        {
+            int value = Value(r, c);
+
+            if (value == NoValues)
+            {
+                return false;
+            }
+            else if (value == MultipleValues)
+            {
+                int index = IndexOf(r, c);
+
+                for (int i = 0; i < 9; ++i)
+                {
+                    if (!_banned[index + i])
+                    {
+                        SudokuGrid grid(*this);
+                        grid.Set(r, c, i);
+
+                        if (grid.Solve())
+                        {
+                            *this = grid;
+                            break;
+                        }
+                        else
+                        {
+                            Ban(r, c, i);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return true;
+}
+
+bool SudokuGrid::IsSolved() const
+{
+    for (int i = 0; i < 81; ++i)
+    {
+        if (CountLegalValues(i * 9) != 1)
+            return false;
+    }
+
+    return true;
+}
+
+bool SudokuGrid::CanBeSolved() const
+{
+    for (int i = 0; i < 81; ++i)
+    {
+        if (CountLegalValues(i * 9) == 0)
+            return false;
+    }
+
+    return true;
+}
+
+int SudokuGrid::Value(int row, int column) const
+{
+    int index = IndexOf(row, column);
+    int result = NoValues;
+
+    for (int i = 0; i < 9; ++i)
+    {
+        if (!_banned[index + i])
+        {
+            if (result == NoValues)
+                result = i;
+            else
+                return MultipleValues;
+        }
+    }
+
+    return result;
+}
+
 void SudokuGrid::Write(std::ostream& stream) const
 {
     for (int r = 0; r < 9; ++r)
@@ -124,4 +206,14 @@ void SudokuGrid::SpreadBan(int row, int column, int value)
                 Ban(rr, cc, value);
         }
     }
+}
+
+int SudokuGrid::CountLegalValues(int index) const
+{
+    int result = 0;
+
+    for (int i = 0; i < 9; ++i)
+        result += !_banned[index + i];
+
+    return result;
 }
