@@ -41,6 +41,19 @@ const int MotherTestPuzzle[] = {
     0, 0, 0, 0, 0, 9, 7, 0, 0
 };
 
+// http://www.norvig.com/sudoku.html (puzzle 5 / 95)
+const int SlowTestPuzzle[] = {
+    0, 0, 0, 0, 1, 4, 0, 0, 0,
+    0, 3, 0, 0, 0, 0, 2, 0, 0,
+    0, 7, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 9, 0, 0, 0, 3, 0,
+    6, 0, 1, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 8, 0,
+    2, 0, 0, 0, 0, 0, 1, 0, 4,
+    0, 0, 0, 0, 5, 0, 6, 0, 0,
+    0, 0, 0, 7, 0, 8, 0, 0, 0
+};
+
 void SolvePuzzle(const int* puzzle)
 {
     SudokuGrid grid;
@@ -73,6 +86,7 @@ void SolvePuzzle(const int* puzzle)
 int main(int argc, char** argv)
 {
     cout << "class size: " << sizeof(SudokuGrid) << " bytes\n";
+    SolvePuzzle(SlowTestPuzzle);
     SolvePuzzle(EasyTestPuzzle);
     SolvePuzzle(EvilTestPuzzle);
     SolvePuzzle(MotherTestPuzzle);

@@ -33,40 +33,54 @@ bool SudokuGrid::Set(int row, int column, int value)
 
 bool SudokuGrid::Solve()
 {
+    int minCount = 10;
+    int row = -1;
+    int column = -1;
+
     for (int r = 0; r < 9; ++r)
     {
         for (int c = 0; c < 9; ++c)
         {
-            int value = Value(r, c);
+            int index = IndexOf(r, c);
+            int valueCount = CountLegalValues(index);
 
-            if (value == NoValues)
+            if (valueCount == 0)
             {
                 return false;
             }
-            else if (value == MultipleValues)
+            else if (valueCount > 1 && valueCount < minCount)
             {
-                int index = IndexOf(r, c);
+                minCount = valueCount;
+                row = r;
+                column = c;
+            }
+        }
+    }
 
-                for (int i = 0; i < 9; ++i)
+    if (minCount < 10)
+    {
+        int index = IndexOf(row, column);
+
+        for (int i = 0; i < 9; ++i)
+        {
+            if (!_banned[index + i])
+            {
+                SudokuGrid grid(*this);
+                grid.Set(row, column, i);
+
+                if (grid.Solve())
                 {
-                    if (!_banned[index + i])
-                    {
-                        SudokuGrid grid(*this);
-                        grid.Set(r, c, i);
-
-                        if (grid.Solve())
-                        {
-                            *this = grid;
-                            return true;
-                        }
-                        else
-                        {
-                            Ban(r, c, i);
-                        }
-                    }
+                    *this = grid;
+                    return true;
+                }
+                else
+                {
+                    Ban(row, column, i);
                 }
             }
         }
+
+        return false;
     }
 
     return true;
@@ -197,13 +211,14 @@ void SudokuGrid::SpreadBan(int row, int column, int value)
     for (int r = 0; r < 3; ++r)
     {
         int rr = boxRow + r;
+        if (rr == row) continue;
 
         for (int c = 0; c < 3; ++c)
         {
             int cc = boxColumn + c;
+            if (cc == column) continue;
 
-            if (rr != row && cc != column)
-                Ban(rr, cc, value);
+            Ban(rr, cc, value);
         }
     }
 }
