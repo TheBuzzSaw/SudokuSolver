@@ -35,3 +35,6 @@ stderr.txt
 # Builds
 *.bin
 
+# Output
+solve95.txt
+

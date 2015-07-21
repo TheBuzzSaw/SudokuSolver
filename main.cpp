@@ -1,5 +1,6 @@
 #include "SudokuGrid.hpp"
 #include <iostream>
+#include <fstream>
 using namespace std;
 
 // http://www.websudoku.com/?level=1&set_id=632927121
@@ -83,9 +84,46 @@ void SolvePuzzle(const int* puzzle)
     cout << endl;
 }
 
-int main(int argc, char** argv)
+void Solve95Puzzles()
 {
-    cout << "class size: " << sizeof(SudokuGrid) << " bytes\n";
+    ifstream fin("top95.txt", ifstream::binary);
+
+    if (fin)
+    {
+        ofstream fout("solve95.txt", ofstream::binary);
+
+        char puzzle[128];
+
+        for (int i = 0; fin && i < 95; ++i)
+        {
+            cout << "solving " << i << "..." << endl;
+            fin.getline(puzzle, 128);
+            SudokuGrid grid;
+            auto p = puzzle;
+
+            for (int r = 0; r < 9; ++r)
+            {
+                for (int c = 0; c < 9; ++c)
+                {
+                    if ('1' <= *p && *p <= '9')
+                        grid.Set(r, c, *p - '1');
+
+                    ++p;
+                }
+            }
+
+            grid.Solve();
+            grid.Write(fout);
+            fout << '\n';
+        }
+
+        fout.close();
+        fin.close();
+    }
+}
+
+void SolvePuzzles()
+{
     SolvePuzzle(SlowTestPuzzle);
     SolvePuzzle(EasyTestPuzzle);
     SolvePuzzle(EvilTestPuzzle);
@@ -93,5 +131,13 @@ int main(int argc, char** argv)
 
     const int EmptyPuzzle[81] = {};
     SolvePuzzle(EmptyPuzzle);
+}
+
+int main(int argc, char** argv)
+{
+    cout << "class size: " << sizeof(SudokuGrid) << " bytes\n";
+    Solve95Puzzles();
+    //SolvePuzzles();
+
     return 0;
 }
