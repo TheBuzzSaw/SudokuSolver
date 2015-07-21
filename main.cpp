@@ -28,6 +28,19 @@ const int EvilTestPuzzle[] = {
     0, 0, 0, 6, 0, 0, 4, 7, 3,
 };
 
+// http://devcry.heiho.net/2015/07/solving-mother-of-all-sudoku-puzzles.html
+const int MotherTestPuzzle[] = {
+    0, 0, 5, 3, 0, 0, 0, 0, 0,
+    8, 0, 0, 0, 0, 0, 0, 2, 0,
+    0, 7, 0, 0, 1, 0, 5, 0, 0,
+    4, 0, 0, 0, 0, 5, 3, 0, 0,
+    0, 1, 0, 0, 7, 0, 0, 0, 6,
+    0, 0, 3, 2, 0, 0, 0, 8, 0,
+    0, 6, 0, 5, 0, 0, 0, 0, 9,
+    0, 0, 4, 0, 0, 0, 0, 3, 0,
+    0, 0, 0, 0, 0, 9, 7, 0, 0
+};
+
 void SolvePuzzle(const int* puzzle)
 {
     SudokuGrid grid;
@@ -62,6 +75,7 @@ int main(int argc, char** argv)
     cout << "class size: " << sizeof(SudokuGrid) << " bytes\n";
     SolvePuzzle(EasyTestPuzzle);
     SolvePuzzle(EvilTestPuzzle);
+    SolvePuzzle(MotherTestPuzzle);
 
     const int EmptyPuzzle[81] = {};
     SolvePuzzle(EmptyPuzzle);
