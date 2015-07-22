@@ -12,19 +12,15 @@ static constexpr int IndexOf(int row, int column)
     return row * 81 + column * 9;
 }
 
-SudokuGrid::SudokuGrid()
-{
-}
-
 bool SudokuGrid::Set(int row, int column, int value)
 {
     int index = IndexOf(row, column);
 
-    if (_banned[index + value])
+    if (_banned.test(index + value))
         return false;
 
     for (int i = 0; i < 9; ++i)
-        _banned[index + i] = i != value;
+        _banned.set(index + i, i != value);
 
     SpreadBan(row, column, value);
 
@@ -63,7 +59,7 @@ bool SudokuGrid::Solve()
 
         for (int i = 0; i < 9; ++i)
         {
-            if (!_banned[index + i])
+            if (!_banned.test(index + i))
             {
                 SudokuGrid grid(*this);
                 grid.Set(row, column, i);
@@ -115,7 +111,7 @@ int SudokuGrid::Value(int row, int column) const
 
     for (int i = 0; i < 9; ++i)
     {
-        if (!_banned[index + i])
+        if (!_banned.test(index + i))
         {
             if (result == NoValues)
                 result = i;
@@ -138,7 +134,7 @@ void SudokuGrid::Write(std::ostream& stream) const
 
             for (int i = 0; i < 9; ++i)
             {
-                if (!_banned[index + i])
+                if (!_banned.test(index + i))
                 {
                     if (value == 'x')
                     {
@@ -169,21 +165,20 @@ void SudokuGrid::Ban(int row, int column, int value)
 {
     int index = IndexOf(row, column);
 
-    if (!_banned[index + value])
+    if (!_banned.test(index + value))
     {
-        _banned[index + value] = true;
+        _banned.set(index + value);
 
         bool found = false;
         int legalValue = -1;
 
         for (int i = 0; i < 9; ++i)
         {
-            if (!_banned[index + i])
+            if (!_banned.test(index + i))
             {
                 if (found)
                 {
-                    found = false;
-                    break;
+                    return;
                 }
                 else
                 {
@@ -228,7 +223,7 @@ int SudokuGrid::CountLegalValues(int index) const
     int result = 0;
 
     for (int i = 0; i < 9; ++i)
-        result += !_banned[index + i];
+        result += !_banned.test(index + i);
 
     return result;
 }

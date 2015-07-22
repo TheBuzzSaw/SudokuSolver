@@ -10,7 +10,7 @@ const int NoValues = -2;
 class SudokuGrid
 {
     public:
-        SudokuGrid();
+        SudokuGrid() = default;
         SudokuGrid(const SudokuGrid&) = default;
         ~SudokuGrid() = default;
 
