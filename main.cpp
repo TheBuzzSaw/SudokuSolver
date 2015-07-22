@@ -74,7 +74,7 @@ void SolvePuzzle(const int* puzzle)
 
     grid.Solve();
 
-    grid.Write(cout);
+    cout << grid;
 
     if (grid.IsSolved())
         cout << "SOLVED!\n";
@@ -92,12 +92,12 @@ void Solve95Puzzles()
     {
         ofstream fout("solve95.txt", ofstream::binary);
 
-        char puzzle[128];
+        char puzzle[96];
 
         for (int i = 0; fin && i < 95; ++i)
         {
-            cout << "solving " << i << "..." << endl;
-            fin.getline(puzzle, 128);
+            cout << "Solving problem " << (i + 1) << "..." << endl;
+            fin.getline(puzzle, sizeof(puzzle));
             SudokuGrid grid;
             auto p = puzzle;
 
@@ -105,7 +105,7 @@ void Solve95Puzzles()
             {
                 for (int c = 0; c < 9; ++c)
                 {
-                    if ('1' <= *p && *p <= '9')
+                    if (InRange(*p, '1', '9'))
                         grid.Set(r, c, *p - '1');
 
                     ++p;
@@ -113,9 +113,10 @@ void Solve95Puzzles()
             }
 
             grid.Solve();
-            grid.Write(fout);
-            fout << '\n';
+            fout << grid << '\n';
         }
+
+        cout << "DONE!" << endl;
 
         fout.close();
         fin.close();

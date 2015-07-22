@@ -1,18 +1,12 @@
 #include "SudokuGrid.hpp"
 #include <cstdint>
 
-template<typename T>
-static constexpr bool IsBetween(T value, T low, T high)
-{
-    return low <= value && value <= high;
-}
-
 static constexpr int IndexOf(int row, int column)
 {
     return row * 81 + column * 9;
 }
 
-bool SudokuGrid::Set(int row, int column, int value)
+bool SudokuGrid::Set(int row, int column, int value) noexcept
 {
     int index = IndexOf(row, column);
 
@@ -27,7 +21,7 @@ bool SudokuGrid::Set(int row, int column, int value)
     return true;
 }
 
-bool SudokuGrid::Solve()
+bool SudokuGrid::Solve() noexcept
 {
     int minCount = 10;
     int row = -1;
@@ -82,7 +76,7 @@ bool SudokuGrid::Solve()
     return true;
 }
 
-bool SudokuGrid::IsSolved() const
+bool SudokuGrid::IsSolved() const noexcept
 {
     for (int i = 0; i < 81; ++i)
     {
@@ -93,7 +87,7 @@ bool SudokuGrid::IsSolved() const
     return true;
 }
 
-bool SudokuGrid::CanBeSolved() const
+bool SudokuGrid::CanBeSolved() const noexcept
 {
     for (int i = 0; i < 81; ++i)
     {
@@ -104,7 +98,7 @@ bool SudokuGrid::CanBeSolved() const
     return true;
 }
 
-int SudokuGrid::Value(int row, int column) const
+int SudokuGrid::Value(int row, int column) const noexcept
 {
     int index = IndexOf(row, column);
     int result = NoValues;
@@ -123,7 +117,7 @@ int SudokuGrid::Value(int row, int column) const
     return result;
 }
 
-void SudokuGrid::Write(std::ostream& stream) const
+std::ostream& SudokuGrid::Write(std::ostream& stream) const
 {
     for (int r = 0; r < 9; ++r)
     {
@@ -159,9 +153,11 @@ void SudokuGrid::Write(std::ostream& stream) const
         if (r == 2 || r == 5)
             stream << "---+---+---\n";
     }
+
+    return stream;
 }
 
-void SudokuGrid::Ban(int row, int column, int value)
+void SudokuGrid::Ban(int row, int column, int value) noexcept
 {
     int index = IndexOf(row, column);
 
@@ -192,7 +188,7 @@ void SudokuGrid::Ban(int row, int column, int value)
     }
 }
 
-void SudokuGrid::SpreadBan(int row, int column, int value)
+void SudokuGrid::SpreadBan(int row, int column, int value) noexcept
 {
     for (int r = 0; r < 9; ++r)
         if (r != row) Ban(r, column, value);
@@ -218,7 +214,7 @@ void SudokuGrid::SpreadBan(int row, int column, int value)
     }
 }
 
-int SudokuGrid::CountLegalValues(int index) const
+int SudokuGrid::CountLegalValues(int index) const noexcept
 {
     int result = 0;
 
@@ -226,4 +222,9 @@ int SudokuGrid::CountLegalValues(int index) const
         result += !_banned.test(index + i);
 
     return result;
+}
+
+std::ostream& operator<<(std::ostream& stream, const SudokuGrid& grid)
+{
+    return grid.Write(stream);
 }
