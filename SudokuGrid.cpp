@@ -1,7 +1,7 @@
 #include "SudokuGrid.hpp"
 #include <cstdint>
 
-static constexpr int IndexOf(int row, int column)
+static constexpr int IndexOf(int row, int column) noexcept
 {
     return row * 81 + column * 9;
 }
@@ -27,6 +27,7 @@ bool SudokuGrid::Solve() noexcept
     int row = -1;
     int column = -1;
 
+    // First, locate the cell with the fewest legal values (minimum 2).
     for (int r = 0; r < 9; ++r)
     {
         for (int c = 0; c < 9; ++c)
@@ -36,6 +37,8 @@ bool SudokuGrid::Solve() noexcept
 
             if (valueCount == 0)
             {
+                // This puzzle cannot be solved.
+                // All values have been ruled out for this cell.
                 return false;
             }
             else if (valueCount > 1 && valueCount < minCount)
@@ -47,7 +50,7 @@ bool SudokuGrid::Solve() noexcept
         }
     }
 
-    if (minCount < 10)
+    if (minCount < 10) // Is there a cell with multiple legal values?
     {
         int index = IndexOf(row, column);
 
@@ -55,24 +58,29 @@ bool SudokuGrid::Solve() noexcept
         {
             if (!_banned.test(index + i))
             {
+                // Propose the hypothesis!
                 SudokuGrid grid(*this);
                 grid.Set(row, column, i);
 
                 if (grid.Solve())
                 {
+                    // Found a solution!
                     *this = grid;
                     return true;
                 }
                 else
                 {
+                    // Not a solution. Blacklist the value.
                     Ban(row, column, i);
                 }
             }
         }
 
+        // Not a single proposed solution panned out.
         return false;
     }
 
+    // The grid has already been solved.
     return true;
 }
 
@@ -174,6 +182,7 @@ void SudokuGrid::Ban(int row, int column, int value) noexcept
             {
                 if (found)
                 {
+                    // Multiple legal values.
                     return;
                 }
                 else
@@ -184,6 +193,7 @@ void SudokuGrid::Ban(int row, int column, int value) noexcept
             }
         }
 
+        // Only spread the ban if one legal value remains.
         if (found) SpreadBan(row, column, legalValue);
     }
 }

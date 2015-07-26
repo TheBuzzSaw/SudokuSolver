@@ -8,7 +8,7 @@ const int MultipleValues = -1;
 const int NoValues = -2;
 
 template<typename T>
-static constexpr bool InRange(T value, T low, T high)
+constexpr bool InRange(T value, T low, T high) noexcept
 {
     return low <= value && value <= high;
 }
@@ -16,11 +16,11 @@ static constexpr bool InRange(T value, T low, T high)
 class SudokuGrid
 {
     public:
-        constexpr SudokuGrid() = default;
-        constexpr SudokuGrid(const SudokuGrid&) = default;
-        ~SudokuGrid() = default;
+        constexpr SudokuGrid() noexcept = default;
+        constexpr SudokuGrid(const SudokuGrid&) noexcept = default;
+        ~SudokuGrid() noexcept = default;
 
-        SudokuGrid& operator=(const SudokuGrid&) = default;
+        SudokuGrid& operator=(const SudokuGrid&) noexcept = default;
 
         bool Set(int row, int column, int value) noexcept;
         bool Solve() noexcept;
