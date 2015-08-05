@@ -4,8 +4,8 @@
 #include <bitset>
 #include <iostream>
 
-const int MultipleValues = -1;
-const int NoValues = -2;
+constexpr int MultipleValues = -1;
+constexpr int NoValues = -2;
 
 template<typename T>
 constexpr bool InRange(T value, T low, T high) noexcept

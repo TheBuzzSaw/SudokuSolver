@@ -1,4 +1,4 @@
-#include "SudokuGrid.hpp"
+#include "CustomSudokuGrid.hpp"
 #include <iostream>
 #include <fstream>
 using namespace std;
@@ -134,11 +134,20 @@ void SolvePuzzles()
     SolvePuzzle(EmptyPuzzle);
 }
 
+template<size_t N> void Show()
+{
+    cout << "sizeof(bitset<" << N << ">) == " << sizeof(bitset<N>) << endl;
+}
+
 int main(int argc, char** argv)
 {
     cout << "class size: " << sizeof(SudokuGrid) << " bytes\n";
-    Solve95Puzzles();
+    //Solve95Puzzles();
     //SolvePuzzles();
+
+    Show<63>();
+    Show<64>();
+    Show<65>();
 
     return 0;
 }
