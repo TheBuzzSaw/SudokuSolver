@@ -29,7 +29,7 @@ public:
     CustomSudokuGrid& operator=(const CustomSudokuGrid&) noexcept = default;
 
     bool Set(int row, int column, int value) noexcept;
-    //bool Solve() noexcept;
+    bool Solve() noexcept;
 
     bool IsSolved() const noexcept;
     bool CanBeSolved() const noexcept;
@@ -45,6 +45,71 @@ bool CustomSudokuGrid<N>::Set(int row, int column, int value) noexcept
     if (_banned.test(index + value)) return false;
     for (int i = 0; i < N2; ++i) _banned.set(index + i, i != value);
     SpreadBan(row, column, value);
+    return true;
+}
+
+template<int N>
+bool CustomSudokuGrid<N>::Solve() noexcept
+{
+    constexpr int CountCap = N2 + 1;
+    int minCount = CountCap;
+    int row = -1;
+    int column = -1;
+
+    // First, locate the cell with the fewest legal values (minimum 2).
+    for (int r = 0; r < N2; ++r)
+    {
+        for (int c = 0; c < N2; ++c)
+        {
+            int index = IndexOf(r, c);
+            int valueCount = CountLegalValues(index);
+
+            if (valueCount == 0)
+            {
+                // This puzzle cannot be solved.
+                // All values have been ruled out for this cell.
+                return false;
+            }
+            else if (valueCount > 1 && valueCount < minCount)
+            {
+                minCount = valueCount;
+                row = r;
+                column = c;
+            }
+        }
+    }
+
+    if (minCount < CountCap)
+    {
+        int index = IndexOf(row, column);
+
+        for (int i = 0; i < N2; ++i)
+        {
+            if (!_banned.test(index + i))
+            {
+                // Propose the hypothesis!
+                CustomSudokuGrid<N> grid(*this);
+                grid.Set(row, column, i);
+
+                if (grid.Solve())
+                {
+                    // Found a solution!
+                    *this = grid;
+                    return true;
+                }
+                else
+                {
+                    // Not a solution. Blacklist the value.
+                    Ban(row, column, i);
+                }
+            }
+        }
+
+        // Not a single proposed solution panned out.
+        return false;
+    }
+
+    // The grid has already been solved.
     return true;
 }
 
@@ -204,7 +269,7 @@ std::ostream& CustomSudokuGrid<N>::Write(std::ostream& stream) const
         stream << '\n';
     }
 
-    return stream << '\n';
+    return stream;
 }
 
 template<int N>

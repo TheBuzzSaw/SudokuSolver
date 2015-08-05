@@ -54,15 +54,16 @@ const int SlowTestPuzzle[] = {
     0, 0, 0, 7, 0, 8, 0, 0, 0
 };
 
-void SolvePuzzle(const int* puzzle)
+template<int N> void SolvePuzzle(const int* puzzle)
 {
-    SudokuGrid grid;
+    CustomSudokuGrid<N> grid;
+    constexpr auto N2 = N * N;
 
     int index = 0;
 
-    for (int r = 0; r < 9; ++r)
+    for (int r = 0; r < N2; ++r)
     {
-        for (int c = 0; c < 9; ++c)
+        for (int c = 0; c < N2; ++c)
         {
             auto value = puzzle[index++];
 
@@ -124,13 +125,13 @@ void Solve95Puzzles()
 
 void SolvePuzzles()
 {
-    SolvePuzzle(SlowTestPuzzle);
-    SolvePuzzle(EasyTestPuzzle);
-    SolvePuzzle(EvilTestPuzzle);
-    SolvePuzzle(MotherTestPuzzle);
+    SolvePuzzle<3>(SlowTestPuzzle);
+    SolvePuzzle<3>(EasyTestPuzzle);
+    SolvePuzzle<3>(EvilTestPuzzle);
+    SolvePuzzle<3>(MotherTestPuzzle);
 
     const int EmptyPuzzle[81] = {};
-    SolvePuzzle(EmptyPuzzle);
+    SolvePuzzle<3>(EmptyPuzzle);
 }
 
 template<size_t N> void Show()
@@ -142,7 +143,7 @@ int main(int argc, char** argv)
 {
     cout << "class size: " << sizeof(SudokuGrid) << " bytes\n";
     //Solve95Puzzles();
-    //SolvePuzzles();
+    SolvePuzzles();
 
     Show<63>();
     Show<64>();
