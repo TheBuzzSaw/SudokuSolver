@@ -32,6 +32,7 @@
 			<Add option="-std=c++11" />
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="CustomSudokuGrid.hpp" />
 		<Unit filename="SudokuGrid.cpp" />
 		<Unit filename="SudokuGrid.hpp" />
 		<Unit filename="main.cpp" />
