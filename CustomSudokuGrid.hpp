@@ -157,8 +157,21 @@ std::ostream& CustomSudokuGrid<N>::Write(std::ostream& stream) const
 {
     for (int r = 0; r < N2; ++r)
     {
+        if (!(r % N) && r > 0)
+        {
+            for (int i = 0; i < N; ++i)
+            {
+                if (i > 0) stream << '+';
+                for (int j = 0; j < N; ++j) stream << "---";
+            }
+
+            stream << '\n';
+        }
+
         for (int c = 0; c < N2; ++c)
         {
+            if (!(c % N) && c > 0) stream << '|';
+
             int index = IndexOf(r, c);
             int value = NoValues;
 
@@ -183,11 +196,15 @@ std::ostream& CustomSudokuGrid<N>::Write(std::ostream& stream) const
             if (value == NoValues)
                 stream << 'x';
             else if (value == MultipleValues)
-                stream << '.';
+                stream << '?';
             else
                 stream << (value + 1);
         }
+
+        stream << '\n';
     }
+
+    return stream << '\n';
 }
 
 template<int N>

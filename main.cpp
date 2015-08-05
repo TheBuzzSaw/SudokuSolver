@@ -1,5 +1,4 @@
 #include "CustomSudokuGrid.hpp"
-#include <iostream>
 #include <fstream>
 using namespace std;
 
@@ -148,6 +147,12 @@ int main(int argc, char** argv)
     Show<63>();
     Show<64>();
     Show<65>();
+
+    CustomSudokuGrid<3> a;
+    a.Set(1, 1, 3);
+    CustomSudokuGrid<4> b;
+
+    cout << a << b << endl;
 
     return 0;
 }
