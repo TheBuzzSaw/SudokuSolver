@@ -2,8 +2,15 @@
 #define CUSTOMSUDOKUGRID_HPP
 
 #include "SudokuGrid.hpp"
-#include <iomanip>
 #include <cstdio>
+
+constexpr auto Standard3 = "123456789";
+constexpr auto Hex4 = "0123456789ABCDEF";
+
+template<int N> constexpr const char* GetCharacters()
+{
+    return N == 4 ? Hex4 : Standard3;
+}
 
 template<int N> class CustomSudokuGrid
 {
@@ -35,7 +42,7 @@ public:
     bool CanBeSolved() const noexcept;
     int Value(int row, int column) const noexcept;
 
-    std::ostream& Write(std::ostream& stream) const;
+    std::ostream& Write(std::ostream& stream, const char* characters) const;
 };
 
 template<int N>
@@ -217,8 +224,9 @@ int CustomSudokuGrid<N>::CountLegalValues(int index) const noexcept
     return result;
 }
 
-template<int N>
-std::ostream& CustomSudokuGrid<N>::Write(std::ostream& stream) const
+template<int N> std::ostream& CustomSudokuGrid<N>::Write(
+    std::ostream& stream,
+    const char* characters) const
 {
     for (int r = 0; r < N2; ++r)
     {
@@ -227,7 +235,7 @@ std::ostream& CustomSudokuGrid<N>::Write(std::ostream& stream) const
             for (int i = 0; i < N; ++i)
             {
                 if (i > 0) stream << '+';
-                for (int j = 0; j < N; ++j) stream << "---";
+                for (int j = 0; j < N; ++j) stream << '-';
             }
 
             stream << '\n';
@@ -256,26 +264,18 @@ std::ostream& CustomSudokuGrid<N>::Write(std::ostream& stream) const
                 }
             }
 
-            stream << std::setw(3) << std::right;
-
             if (value == NoValues)
                 stream << 'x';
             else if (value == MultipleValues)
                 stream << '?';
             else
-                stream << (value + 1);
+                stream << characters[value];
         }
 
         stream << '\n';
     }
 
     return stream;
-}
-
-template<int N>
-std::ostream& operator<<(std::ostream& stream, const CustomSudokuGrid<N>& grid)
-{
-    return grid.Write(stream);
 }
 
 #endif
